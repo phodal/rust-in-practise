@@ -1,10 +1,10 @@
 [package]
-name = "hello-rocket"
+name = "hello-world"
 version = "0.1.0"
 authors = ["Phodal Huang <h@phodal.com>"]
 edition = "2018"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-rocket = "0.4.5"
+hyper = "0.12.3"
+pretty_env_logger = "0.2.3"
