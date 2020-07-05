@@ -12,6 +12,12 @@ docker build -t hello-world .
 docker run --name hello-world -p 8080:8080 -d hello-world
 ```
 
+2.1 use local, not `ErrImagePull`
+
+```
+eval $(minikube docker-env)
+```
+
 3. run in k8s
 
 ```

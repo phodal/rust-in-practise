@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hello-maunal
+spec:
+  containers:
+    - image: hello-world
+      name: world
+      ports:
+        - containerPort: 8080
+          protocol: TCP
