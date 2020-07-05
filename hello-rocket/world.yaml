@@ -4,7 +4,7 @@ metadata:
   name: hello-maunal
 spec:
   containers:
-    - image: hello-world
+    - image: phodal/rust-hello
       name: world
       ports:
         - containerPort: 8080
