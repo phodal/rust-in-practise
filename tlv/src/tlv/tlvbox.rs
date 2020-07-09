@@ -47,7 +47,7 @@ impl TlvBox {
 
             let value_start = offset as usize + parsed;
             let mut value_mut = BytesMut::with_capacity(4);
-            value_mut.put(&buffer_vec[value_start..value_start + 4]);
+            value_mut.put(&buffer_vec[value_start..value_start + size as usize]);
 
             tlv_box.put_bytes_value(typ as i32, value_mut.freeze());
 
@@ -194,8 +194,6 @@ impl TlvBox {
 
 #[cfg(test)]
 mod tests {
-    use std::str;
-
     use bytes::{BufMut, Bytes, BytesMut};
 
     use crate::tlv::tlvbox::TlvBox;
@@ -287,7 +285,7 @@ mod tests {
         let result_box = TlvBox::parse(serialized.clone(), 0, serialized.clone().len());
 
         assert_eq!(1, result_box.m_objects.len());
-        assert_eq!(12, result_box.m_total_bytes);
+        assert_eq!(20, result_box.m_total_bytes);
     }
 
     #[test]
@@ -302,7 +300,6 @@ mod tests {
         assert_eq!(tlv_test_obj.get_f32_value(02), result_box.get_f32_value(02));
     }
 
-    #[ignore]
     #[test]
     fn test_convert_object_string() {
         let mut tlv_box1 = TlvBox::new();
