@@ -172,17 +172,29 @@ impl TlvBox {
             None => None,
         }
     }
-    pub fn get_string_value(&self, typ: i32) -> String {
+    pub fn get_string_value(&self, typ: i32) -> Option<String> {
         let value = self.get_bytes_value(typ);
         let buf = value.clone().unwrap().to_vec();
-        let s = match str::from_utf8(&buf) {
-            Ok(v) => v,
-            Err(e) => panic!("Invalid UTF-8 sequence: {}", e),
-        };
-        String::from(s)
+
+        match str::from_utf8(&buf) {
+            Ok(v) => {
+                Some(String::from(v))
+            },
+            Err(e) => None,
+        }
     }
-    pub fn get_object_value(&self, typ: i32) -> TlvBox {
-        unimplemented!()
+
+    pub fn get_object_value(&self, typ: i32) -> Option<TlvBox> {
+        let option = self.m_objects.get(&typ);
+        match option {
+            None => {
+                None
+            },
+            Some(bytes) => {
+                let tlv_box = TlvBox::parse(bytes.clone(), 0, bytes.len());
+                Some(tlv_box)
+            },
+        }
     }
 }
 
@@ -218,10 +230,11 @@ mod tests {
         let a = format!("{:?}", Bytes::from(value.clone().unwrap()));
 
         assert_eq!("b\"hello, world\"", a);
+
+        assert_eq!("hello, world", tlv_box.get_string_value(01).unwrap());
+
         assert_eq!(1, tlv_box.m_objects.len());
         assert_eq!(20, tlv_box.m_total_bytes);
-
-        assert_eq!("hello, world", tlv_box.get_string_value(01));
     }
 
     #[test]
@@ -293,6 +306,31 @@ mod tests {
         let result_box = TlvBox::parse(serialized.clone(), 0, serialized.clone().len());
 
         assert_eq!(tlv_test_obj.get_f32_value(02), result_box.get_f32_value(02));
+    }
+
+    #[ignore]
+    #[test]
+    fn test_convert_object_string() {
+        let mut tlv_box1 = TlvBox::new();
+        tlv_box1.put_string_value(01, String::from("helloo"));
+
+        let mut tlv_box = TlvBox::new();
+        tlv_box.put_object_value(02, tlv_box1);
+
+        let tlv_box2 = tlv_box.get_object_value(02).unwrap();
+        assert_eq!("helloo", tlv_box2.get_string_value(01).unwrap());
+    }
+
+    #[test]
+    fn test_convert_object_floaw() {
+        let mut tlv_box1 = TlvBox::new();
+        tlv_box1.put_f32_value(01, 33.33);
+
+        let mut tlv_box = TlvBox::new();
+        tlv_box.put_object_value(02, tlv_box1);
+
+        let tlv_box2 = tlv_box.get_object_value(02).unwrap();
+        assert_eq!(33.33, tlv_box2.get_f32_value(01).unwrap());
     }
 
 }
