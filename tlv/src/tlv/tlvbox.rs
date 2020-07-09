@@ -37,19 +37,19 @@ impl TlvBox {
 
             let type_start = offset as usize + parsed;
             let mut type_mut = BytesMut::with_capacity(4);
-            type_mut.copy_from_slice(&buffer_vec[type_start..type_start + 4]);
+            type_mut.put(&buffer_vec[type_start..type_start + 4]);
             let typ = type_mut.get_i32();
             parsed += 4;
 
             let length_start = offset as usize + parsed;
             let mut size_mut = BytesMut::with_capacity(4);
-            size_mut.copy_from_slice(&buffer_vec[length_start..length_start + 4]);
+            size_mut.put(&buffer_vec[length_start..length_start + 4]);
             let size = size_mut.get_i32();
             parsed += 4;
 
             let value_start = offset as usize + parsed;
             let mut value_mut = BytesMut::with_capacity(4);
-            value_mut.copy_from_slice(&buffer_vec[value_start..value_start + 4]);
+            value_mut.put(&buffer_vec[value_start..value_start + 4]);
 
             tlv_box.putBytesValue(typ as i32, value_mut.freeze());
 
@@ -268,6 +268,7 @@ mod tests {
         let mut tlv_test_obj = TlvBox::new();
         let value = 340282346638528859811704183484516925440.0000000000000000;
         tlv_test_obj.putFloatValue(02, value);
+        assert_eq!(12, tlv_test_obj.m_total_bytes);
 
         let mut tlv_box = TlvBox::new();
         tlv_box.putObjectValue(01, tlv_test_obj);
@@ -276,6 +277,9 @@ mod tests {
         assert_eq!(20, tlv_box.m_total_bytes);
 
         let serialized = tlv_box.serialize();
-        TlvBox::parse(serialized.clone(), 0, serialized.clone().len());
+        let result_box = TlvBox::parse(serialized.clone(), 0, serialized.clone().len());
+
+        assert_eq!(1, result_box.m_objects.len());
+        assert_eq!(12, result_box.m_total_bytes);
     }
 }
