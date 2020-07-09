@@ -46,14 +46,19 @@ impl TlvBox {
         buf.put_i64(value);
         self.putBytesValue(typ, Bytes::from(buf))
     }
-    pub fn putFloatValue(&self, typ: i32, value: f32) {
-        unimplemented!()
+
+    pub fn putFloatValue(&mut self, typ: i32, value: f32) {
+        let mut buf = Vec::with_capacity(4);
+        buf.put_f32(value);
+        self.putBytesValue(typ, Bytes::from(buf))
     }
+
     pub fn putDoubleValue(&mut self, typ: i32, value: f64) {
-        let mut buf = Vec::with_capacity(2);
+        let mut buf = Vec::with_capacity(8);
         buf.put_f64(value);
         self.putBytesValue(typ, Bytes::from(buf))
     }
+
     pub fn putStringValue(&mut self, typ: i32, value: String) {
         let len = value.clone().len();
         let mut byts = BytesMut::with_capacity(len);
@@ -114,8 +119,12 @@ impl TlvBox {
             None => None,
         }
     }
-    pub fn getFloatValue(&self, typ: i32) -> f32 {
-        unimplemented!()
+    pub fn getFloatValue(&self, typ: i32) -> Option<f32> {
+        let mut bytes = self.m_objects.get(typ.clone().borrow());
+        match bytes {
+            Some(x) => Some(x.clone().get_f32()),
+            None => None,
+        }
     }
     pub fn getDoubleValue(&self, typ: i32) -> Option<f64> {
         let mut bytes = self.m_objects.get(typ.clone().borrow());
@@ -186,7 +195,7 @@ mod tests {
     #[test]
     fn test_convert_double() {
         let mut tlv_box = TlvBox::new();
-        let value = 1000.88;
+        let value = -179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368.0000000000000000;;
         tlv_box.putDoubleValue(01, value);
         assert_eq!(value, tlv_box.getDoubleValue(01).unwrap());
     }
@@ -205,6 +214,14 @@ mod tests {
         let value = 2332;
         tlv_box.putLongValue(01, value);
         assert_eq!(value, tlv_box.getLongValue(01).unwrap());
+    }
+
+    #[test]
+    fn test_convert_float() {
+        let mut tlv_box = TlvBox::new();
+        let value = 340282346638528859811704183484516925440.0000000000000000;
+        tlv_box.putFloatValue(01, value);
+        assert_eq!(value, tlv_box.getFloatValue(01).unwrap());
     }
 
     #[test]
