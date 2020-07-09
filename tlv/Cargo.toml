@@ -3,6 +3,21 @@ name = "ptlv"
 version = "0.1.0"
 authors = ["Phodal Huang <h@phodal.com>"]
 edition = "2018"
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/phodal/learn-rust"
+documentation = "https://github.com/phodal/learn-rust"
+homepage = "https://github.com/phodal/learn-rust"
+description = """
+https://github.com/phodal/learn-rust
+"""
+categories = ["text-processing"]
+exclude = [
+    "_fixtures",
+    "docs",
+    ".github",
+    ".travis.yml",
+]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

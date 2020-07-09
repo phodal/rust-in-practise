@@ -2,7 +2,7 @@
 
 > [Type-Length-Value](https://en.wikipedia.org/wiki/Type-length-value)
 
-Within data communication protocols, TLV (type-length-value or tag-length-value) is an encoding scheme used for optional information element in a certain protocol.
+c
 
 The type and length are fixed in size (typically 1-4 bytes), and the value field is of variable size. These fields are used as follows:
 
