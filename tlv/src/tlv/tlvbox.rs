@@ -5,7 +5,7 @@ use std::iter::FromIterator;
 use std::str;
 use std::sync::Arc;
 
-use bytes::{Bytes, BytesMut};
+use bytes::{Bytes, BytesMut, BufMut, Buf};
 
 pub struct TlvBox {
     m_objects: HashMap<i32, Bytes>,
@@ -20,8 +20,10 @@ impl TlvBox {
         }
     }
 
-    pub fn putShortValue(&self, typ: i32, value: i16) {
-        unimplemented!()
+    pub fn putShortValue(&mut self, typ: i32, value: i16) {
+        let mut buf = Vec::with_capacity(2);
+        buf.put_i16(value);
+        self.putBytesValue(typ, Bytes::from(buf))
     }
     pub fn putIntValue(&self, typ: i32, value: i32) {
         unimplemented!()
@@ -65,8 +67,14 @@ impl TlvBox {
             }
         }
     }
-    pub fn getShortValue(&self, typ: i32) -> i16 {
-        unimplemented!()
+    pub fn getShortValue(&self, typ: i32) -> Option<i16> {
+        let mut bytes = self.m_objects.get(typ.clone().borrow());
+        match bytes {
+            Some(x) => {
+                Some(x.clone().get_i16())
+            },
+            None => None,
+        }
     }
     pub fn getIntValue(&self, typ: i32) -> i32 {
         unimplemented!()
@@ -133,5 +141,12 @@ mod tests {
         assert_eq!(20, tlv_box.m_total_bytes);
 
         assert_eq!("hello, world", tlv_box.getStringValue(01));
+    }
+
+    #[test]
+    fn test_covert_short() {
+        let mut tlv_box = TlvBox::new();
+        tlv_box.putShortValue(01, 12);
+        assert_eq!(12, tlv_box.getShortValue(01).unwrap());
     }
 }
