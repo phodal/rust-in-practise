@@ -1,7 +1,7 @@
 use std::borrow::Borrow;
 use std::collections::HashMap;
 use std::fmt::Write;
-    use std::str;
+use std::str;
 use std::sync::Arc;
 
 use bytes::{Buf, BufMut, Bytes, BytesMut};
@@ -10,6 +10,16 @@ pub struct TlvBox {
     m_objects: HashMap<i32, Bytes>,
     m_total_bytes: usize,
 }
+
+impl Clone for TlvBox {
+    fn clone(&self) -> Self {
+        TlvBox {
+            m_objects: self.m_objects.clone(),
+            m_total_bytes: self.m_total_bytes.clone()
+        }
+    }
+}
+
 
 impl TlvBox {
     pub fn new() -> TlvBox {
@@ -45,18 +55,29 @@ impl TlvBox {
 
         self.putBytesValue(typ, byts.freeze());
     }
-    pub fn putObjectValue(&self, typ: i32, value: TlvBox) {
-        unimplemented!()
+
+    pub fn putObjectValue(&mut self, typ: i32, value: TlvBox) {
+        self.putBytesValue(typ, value.clone().serialize());
     }
+
     pub fn putBytesValue(&mut self, typ: i32, value: Bytes) {
         self.m_objects.insert(typ, value.clone());
         self.m_total_bytes += value.len() + 8;
     }
-    pub fn serialize() -> Arc<BytesMut> {
-        unimplemented!()
+
+    pub fn serialize(&mut self) -> Bytes {
+        let offset = 0;
+        let result = BytesMut::with_capacity(self.m_total_bytes);
+        let keys = self.m_objects.keys();
+        for key in keys {
+            let bytes = self.m_objects.get(key).unwrap();
+
+        }
+        Bytes::from(result)
     }
 
-    pub fn parse(&self, buffer: Arc<BytesMut>, offset: i32, length: i32) {}
+    pub fn parse(&self, buffer: BytesMut, offset: i32, length: i32) {}
+
     pub fn getBytesValue(&self, typ: i32) -> Option<Bytes> {
         let bytes = self.m_objects.get(typ.clone().borrow());
         match bytes {
@@ -152,5 +173,15 @@ mod tests {
         let value = 1000.88;
         tlv_box.putDoubleValue(01, value);
         assert_eq!(value, tlv_box.getDoubleValue(01).unwrap());
+    }
+
+    #[test]
+    fn test_covert_object() {
+        let mut tlv_box = TlvBox::new();
+        let value = 1000.88;
+
+        let tlv_box1_test = TlvBox::new();
+        tlv_box.putObjectValue(01, tlv_box1_test);
+        // assert_eq!(value, tlv_box.getDoubleValue(01).unwrap());
     }
 }
