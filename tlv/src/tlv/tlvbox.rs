@@ -33,8 +33,10 @@ impl TlvBox {
     pub fn putFloatValue(&self, typ: i32, value: f32) {
         unimplemented!()
     }
-    pub fn putDoubleValue(&self, typ: i32, value: f64) {
-        unimplemented!()
+    pub fn putDoubleValue(&mut self, typ: i32, value: f64) {
+        let mut buf = Vec::with_capacity(2);
+        buf.put_f64(value);
+        self.putBytesValue(typ, Bytes::from(buf))
     }
     pub fn putStringValue(&mut self, typ: i32, value: String) {
         let len = value.clone().len();
@@ -78,8 +80,12 @@ impl TlvBox {
     pub fn getFloatValue(&self, typ: i32) -> f32 {
         unimplemented!()
     }
-    pub fn getDoubleValue(&self, typ: i32) -> f64 {
-        unimplemented!()
+    pub fn getDoubleValue(&self, typ: i32) -> Option<f64> {
+        let mut bytes = self.m_objects.get(typ.clone().borrow());
+        match bytes {
+            Some(x) => Some(x.clone().get_f64()),
+            None => None,
+        }
     }
     pub fn getStringValue(&self, typ: i32) -> String {
         let value = self.getBytesValue(typ);
@@ -138,5 +144,13 @@ mod tests {
         let mut tlv_box = TlvBox::new();
         tlv_box.putShortValue(01, 12);
         assert_eq!(12, tlv_box.getShortValue(01).unwrap());
+    }
+
+    #[test]
+    fn test_covert_double() {
+        let mut tlv_box = TlvBox::new();
+        let value = 1000.88;
+        tlv_box.putDoubleValue(01, value);
+        assert_eq!(value, tlv_box.getDoubleValue(01).unwrap());
     }
 }
