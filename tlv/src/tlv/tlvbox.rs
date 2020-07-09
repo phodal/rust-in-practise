@@ -282,4 +282,16 @@ mod tests {
         assert_eq!(1, result_box.m_objects.len());
         assert_eq!(12, result_box.m_total_bytes);
     }
+
+    #[test]
+    fn test_convert_object_with_value() {
+        let mut tlv_test_obj = TlvBox::new();
+        let value = 1233.00;
+        tlv_test_obj.putFloatValue(02, value);
+
+        let serialized = tlv_test_obj.serialize();
+        let result_box = TlvBox::parse(serialized.clone(), 0, serialized.clone().len());
+
+        assert_eq!(tlv_test_obj.getFloatValue(02), result_box.getFloatValue(02));
+    }
 }
