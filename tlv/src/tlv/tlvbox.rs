@@ -51,7 +51,7 @@ impl TlvBox {
             let mut value_mut = BytesMut::with_capacity(4);
             value_mut.put(&buffer_vec[value_start..value_start + 4]);
 
-            tlv_box.putBytesValue(typ as i32, value_mut.freeze());
+            tlv_box.put_bytes_value(typ as i32, value_mut.freeze());
 
             parsed += size as usize;
         }
@@ -59,49 +59,49 @@ impl TlvBox {
         return tlv_box;
     }
 
-    pub fn putShortValue(&mut self, typ: i32, value: i16) {
+    pub fn put_i16_value(&mut self, typ: i32, value: i16) {
         let mut buf = Vec::with_capacity(2);
         buf.put_i16(value);
-        self.putBytesValue(typ, Bytes::from(buf))
+        self.put_bytes_value(typ, Bytes::from(buf))
     }
 
-    pub fn putIntValue(&mut self, typ: i32, value: i32) {
+    pub fn put_i32_value(&mut self, typ: i32, value: i32) {
         let mut buf = Vec::with_capacity(4);
         buf.put_i32(value);
-        self.putBytesValue(typ, Bytes::from(buf))
+        self.put_bytes_value(typ, Bytes::from(buf))
     }
 
-    pub fn putLongValue(&mut self, typ: i32, value: i64) {
+    pub fn put_i64_value(&mut self, typ: i32, value: i64) {
         let mut buf = Vec::with_capacity(8);
         buf.put_i64(value);
-        self.putBytesValue(typ, Bytes::from(buf))
+        self.put_bytes_value(typ, Bytes::from(buf))
     }
 
-    pub fn putFloatValue(&mut self, typ: i32, value: f32) {
+    pub fn put_f32_value(&mut self, typ: i32, value: f32) {
         let mut buf = Vec::with_capacity(4);
         buf.put_f32(value);
-        self.putBytesValue(typ, Bytes::from(buf))
+        self.put_bytes_value(typ, Bytes::from(buf))
     }
 
-    pub fn putDoubleValue(&mut self, typ: i32, value: f64) {
+    pub fn put_f64_value(&mut self, typ: i32, value: f64) {
         let mut buf = Vec::with_capacity(8);
         buf.put_f64(value);
-        self.putBytesValue(typ, Bytes::from(buf))
+        self.put_bytes_value(typ, Bytes::from(buf))
     }
 
-    pub fn putStringValue(&mut self, typ: i32, value: String) {
+    pub fn put_string_value(&mut self, typ: i32, value: String) {
         let len = value.clone().len();
         let mut byts = BytesMut::with_capacity(len);
         write!(byts, "{}", &value).unwrap();
 
-        self.putBytesValue(typ, byts.freeze());
+        self.put_bytes_value(typ, byts.freeze());
     }
 
-    pub fn putObjectValue(&mut self, typ: i32, value: TlvBox) {
-        self.putBytesValue(typ, value.clone().serialize());
+    pub fn put_object_value(&mut self, typ: i32, value: TlvBox) {
+        self.put_bytes_value(typ, value.clone().serialize());
     }
 
-    pub fn putBytesValue(&mut self, typ: i32, value: Bytes) {
+    pub fn put_bytes_value(&mut self, typ: i32, value: Bytes) {
         self.m_objects.insert(typ, value.clone());
         self.m_total_bytes += value.len() + 8;
     }
@@ -127,7 +127,7 @@ impl TlvBox {
         Bytes::from(result.clone())
     }
 
-    pub fn getBytesValue(&self, typ: i32) -> Option<Bytes> {
+    pub fn get_bytes_value(&self, typ: i32) -> Option<Bytes> {
         let bytes = self.m_objects.get(typ.clone().borrow());
         match bytes {
             None => None,
@@ -135,7 +135,7 @@ impl TlvBox {
         }
     }
 
-    pub fn getShortValue(&self, typ: i32) -> Option<i16> {
+    pub fn get_i16_value(&self, typ: i32) -> Option<i16> {
         let mut bytes = self.m_objects.get(typ.clone().borrow());
         match bytes {
             Some(x) => Some(x.clone().get_i16()),
@@ -143,7 +143,7 @@ impl TlvBox {
         }
     }
 
-    pub fn getIntValue(&self, typ: i32) -> Option<i32> {
+    pub fn get_i32_value(&self, typ: i32) -> Option<i32> {
         let mut bytes = self.m_objects.get(typ.clone().borrow());
         match bytes {
             Some(x) => Some(x.clone().get_i32()),
@@ -151,29 +151,29 @@ impl TlvBox {
         }
     }
 
-    pub fn getLongValue(&self, typ: i32) -> Option<i64> {
+    pub fn get_i64_value(&self, typ: i32) -> Option<i64> {
         let mut bytes = self.m_objects.get(typ.clone().borrow());
         match bytes {
             Some(x) => Some(x.clone().get_i64()),
             None => None,
         }
     }
-    pub fn getFloatValue(&self, typ: i32) -> Option<f32> {
+    pub fn get_f32_value(&self, typ: i32) -> Option<f32> {
         let mut bytes = self.m_objects.get(typ.clone().borrow());
         match bytes {
             Some(x) => Some(x.clone().get_f32()),
             None => None,
         }
     }
-    pub fn getDoubleValue(&self, typ: i32) -> Option<f64> {
+    pub fn get_f64_value(&self, typ: i32) -> Option<f64> {
         let mut bytes = self.m_objects.get(typ.clone().borrow());
         match bytes {
             Some(x) => Some(x.clone().get_f64()),
             None => None,
         }
     }
-    pub fn getStringValue(&self, typ: i32) -> String {
-        let value = self.getBytesValue(typ);
+    pub fn get_string_value(&self, typ: i32) -> String {
+        let value = self.get_bytes_value(typ);
         let buf = value.clone().unwrap().to_vec();
         let s = match str::from_utf8(&buf) {
             Ok(v) => v,
@@ -181,7 +181,7 @@ impl TlvBox {
         };
         String::from(s)
     }
-    pub fn getObjectValue(&self, typ: i32) -> TlvBox {
+    pub fn get_object_value(&self, typ: i32) -> TlvBox {
         unimplemented!()
     }
 }
@@ -200,8 +200,8 @@ mod tests {
 
         let mut buf = BytesMut::with_capacity(1024);
         buf.put(&b"hello world"[..]);
-        tlv_box.putBytesValue(01, buf.clone().freeze());
-        let value = tlv_box.getBytesValue(01);
+        tlv_box.put_bytes_value(01, buf.clone().freeze());
+        let value = tlv_box.get_bytes_value(01);
 
         assert_eq!(11, value.clone().unwrap().len());
         assert_eq!(&b"hello world"[..], value.clone().unwrap());
@@ -210,8 +210,8 @@ mod tests {
     #[test]
     fn test_parse_strings() {
         let mut tlv_box = TlvBox::new();
-        tlv_box.putStringValue(01, String::from("hello, world"));
-        let value = tlv_box.getBytesValue(01);
+        tlv_box.put_string_value(01, String::from("hello, world"));
+        let value = tlv_box.get_bytes_value(01);
 
         assert_eq!(12, value.clone().unwrap().len());
 
@@ -221,57 +221,57 @@ mod tests {
         assert_eq!(1, tlv_box.m_objects.len());
         assert_eq!(20, tlv_box.m_total_bytes);
 
-        assert_eq!("hello, world", tlv_box.getStringValue(01));
+        assert_eq!("hello, world", tlv_box.get_string_value(01));
     }
 
     #[test]
     fn test_convert_short() {
         let mut tlv_box = TlvBox::new();
-        tlv_box.putShortValue(01, 12);
-        assert_eq!(12, tlv_box.getShortValue(01).unwrap());
+        tlv_box.put_i16_value(01, 12);
+        assert_eq!(12, tlv_box.get_i16_value(01).unwrap());
     }
 
     #[test]
     fn test_convert_double() {
         let mut tlv_box = TlvBox::new();
         let value = -179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368.0000000000000000;;
-        tlv_box.putDoubleValue(01, value);
-        assert_eq!(value, tlv_box.getDoubleValue(01).unwrap());
+        tlv_box.put_f64_value(01, value);
+        assert_eq!(value, tlv_box.get_f64_value(01).unwrap());
     }
 
     #[test]
     fn test_convert_int() {
         let mut tlv_box = TlvBox::new();
         let value = 2332;
-        tlv_box.putIntValue(01, value);
-        assert_eq!(value, tlv_box.getIntValue(01).unwrap());
+        tlv_box.put_i32_value(01, value);
+        assert_eq!(value, tlv_box.get_i32_value(01).unwrap());
     }
 
     #[test]
     fn test_convert_long() {
         let mut tlv_box = TlvBox::new();
         let value = 2332;
-        tlv_box.putLongValue(01, value);
-        assert_eq!(value, tlv_box.getLongValue(01).unwrap());
+        tlv_box.put_i64_value(01, value);
+        assert_eq!(value, tlv_box.get_i64_value(01).unwrap());
     }
 
     #[test]
     fn test_convert_float() {
         let mut tlv_box = TlvBox::new();
         let value = 340282346638528859811704183484516925440.0000000000000000;
-        tlv_box.putFloatValue(01, value);
-        assert_eq!(value, tlv_box.getFloatValue(01).unwrap());
+        tlv_box.put_f32_value(01, value);
+        assert_eq!(value, tlv_box.get_f32_value(01).unwrap());
     }
 
     #[test]
     fn test_convert_object() {
         let mut tlv_test_obj = TlvBox::new();
         let value = 340282346638528859811704183484516925440.0000000000000000;
-        tlv_test_obj.putFloatValue(02, value);
+        tlv_test_obj.put_f32_value(02, value);
         assert_eq!(12, tlv_test_obj.m_total_bytes);
 
         let mut tlv_box = TlvBox::new();
-        tlv_box.putObjectValue(01, tlv_test_obj);
+        tlv_box.put_object_value(01, tlv_test_obj);
 
         assert_eq!(1, tlv_box.m_objects.len());
         assert_eq!(20, tlv_box.m_total_bytes);
@@ -287,11 +287,12 @@ mod tests {
     fn test_convert_object_with_value() {
         let mut tlv_test_obj = TlvBox::new();
         let value = 1233.00;
-        tlv_test_obj.putFloatValue(02, value);
+        tlv_test_obj.put_f32_value(02, value);
 
         let serialized = tlv_test_obj.serialize();
         let result_box = TlvBox::parse(serialized.clone(), 0, serialized.clone().len());
 
-        assert_eq!(tlv_test_obj.getFloatValue(02), result_box.getFloatValue(02));
+        assert_eq!(tlv_test_obj.get_f32_value(02), result_box.get_f32_value(02));
     }
+
 }
