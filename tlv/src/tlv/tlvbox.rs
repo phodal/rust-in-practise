@@ -15,7 +15,7 @@ impl Clone for TlvBox {
     fn clone(&self) -> Self {
         TlvBox {
             m_objects: self.m_objects.clone(),
-            m_total_bytes: self.m_total_bytes.clone()
+            m_total_bytes: self.m_total_bytes.clone(),
         }
     }
 }
@@ -41,8 +41,10 @@ impl TlvBox {
         self.putBytesValue(typ, Bytes::from(buf))
     }
 
-    pub fn putLongValue(&self, typ: i32, value: i64) {
-        unimplemented!()
+    pub fn putLongValue(&mut self, typ: i32, value: i64) {
+        let mut buf = Vec::with_capacity(8);
+        buf.put_i64(value);
+        self.putBytesValue(typ, Bytes::from(buf))
     }
     pub fn putFloatValue(&self, typ: i32, value: f32) {
         unimplemented!()
@@ -75,7 +77,6 @@ impl TlvBox {
         let keys = self.m_objects.keys();
         for key in keys {
             let bytes = self.m_objects.get(key).unwrap();
-
         }
         Bytes::from(result)
     }
@@ -106,8 +107,12 @@ impl TlvBox {
         }
     }
 
-    pub fn getLongValue(&self, typ: i32) -> i64 {
-        unimplemented!()
+    pub fn getLongValue(&self, typ: i32) -> Option<i64> {
+        let mut bytes = self.m_objects.get(typ.clone().borrow());
+        match bytes {
+            Some(x) => Some(x.clone().get_i64()),
+            None => None,
+        }
     }
     pub fn getFloatValue(&self, typ: i32) -> f32 {
         unimplemented!()
@@ -172,14 +177,14 @@ mod tests {
     }
 
     #[test]
-    fn test_covert_short() {
+    fn test_convert_short() {
         let mut tlv_box = TlvBox::new();
         tlv_box.putShortValue(01, 12);
         assert_eq!(12, tlv_box.getShortValue(01).unwrap());
     }
 
     #[test]
-    fn test_covert_double() {
+    fn test_convert_double() {
         let mut tlv_box = TlvBox::new();
         let value = 1000.88;
         tlv_box.putDoubleValue(01, value);
@@ -187,7 +192,7 @@ mod tests {
     }
 
     #[test]
-    fn test_covert_int() {
+    fn test_convert_int() {
         let mut tlv_box = TlvBox::new();
         let value = 2332;
         tlv_box.putIntValue(01, value);
@@ -195,7 +200,15 @@ mod tests {
     }
 
     #[test]
-    fn test_covert_object() {
+    fn test_convert_long() {
+        let mut tlv_box = TlvBox::new();
+        let value = 2332;
+        tlv_box.putLongValue(01, value);
+        assert_eq!(value, tlv_box.getLongValue(01).unwrap());
+    }
+
+    #[test]
+    fn test_convert_object() {
         let mut tlv_box = TlvBox::new();
         let value = 1000.88;
 
