@@ -2,7 +2,6 @@ use std::borrow::Borrow;
 use std::collections::HashMap;
 use std::fmt::Write;
 use std::str;
-use std::sync::Arc;
 
 use bytes::{Buf, BufMut, Bytes, BytesMut};
 
@@ -19,7 +18,6 @@ impl Clone for TlvBox {
         }
     }
 }
-
 
 impl TlvBox {
     pub fn new() -> TlvBox {
@@ -56,7 +54,7 @@ impl TlvBox {
             parsed += size as usize;
         }
 
-        return tlv_box;
+        tlv_box
     }
 
     pub fn put_i16_value(&mut self, typ: i32, value: i16) {
@@ -136,7 +134,7 @@ impl TlvBox {
     }
 
     pub fn get_i16_value(&self, typ: i32) -> Option<i16> {
-        let mut bytes = self.m_objects.get(typ.clone().borrow());
+        let bytes = self.m_objects.get(typ.clone().borrow());
         match bytes {
             Some(x) => Some(x.clone().get_i16()),
             None => None,
@@ -144,7 +142,7 @@ impl TlvBox {
     }
 
     pub fn get_i32_value(&self, typ: i32) -> Option<i32> {
-        let mut bytes = self.m_objects.get(typ.clone().borrow());
+        let bytes = self.m_objects.get(typ.clone().borrow());
         match bytes {
             Some(x) => Some(x.clone().get_i32()),
             None => None,
@@ -152,21 +150,21 @@ impl TlvBox {
     }
 
     pub fn get_i64_value(&self, typ: i32) -> Option<i64> {
-        let mut bytes = self.m_objects.get(typ.clone().borrow());
+        let bytes = self.m_objects.get(typ.clone().borrow());
         match bytes {
             Some(x) => Some(x.clone().get_i64()),
             None => None,
         }
     }
     pub fn get_f32_value(&self, typ: i32) -> Option<f32> {
-        let mut bytes = self.m_objects.get(typ.clone().borrow());
+        let bytes = self.m_objects.get(typ.clone().borrow());
         match bytes {
             Some(x) => Some(x.clone().get_f32()),
             None => None,
         }
     }
     pub fn get_f64_value(&self, typ: i32) -> Option<f64> {
-        let mut bytes = self.m_objects.get(typ.clone().borrow());
+        let bytes = self.m_objects.get(typ.clone().borrow());
         match bytes {
             Some(x) => Some(x.clone().get_f64()),
             None => None,
@@ -177,23 +175,19 @@ impl TlvBox {
         let buf = value.clone().unwrap().to_vec();
 
         match str::from_utf8(&buf) {
-            Ok(v) => {
-                Some(String::from(v))
-            },
-            Err(e) => None,
+            Ok(v) => Some(String::from(v)),
+            Err(_e) => None,
         }
     }
 
     pub fn get_object_value(&self, typ: i32) -> Option<TlvBox> {
         let option = self.m_objects.get(&typ);
         match option {
-            None => {
-                None
-            },
+            None => None,
             Some(bytes) => {
                 let tlv_box = TlvBox::parse(bytes.clone(), 0, bytes.len());
                 Some(tlv_box)
-            },
+            }
         }
     }
 }
@@ -247,7 +241,7 @@ mod tests {
     #[test]
     fn test_convert_double() {
         let mut tlv_box = TlvBox::new();
-        let value = -179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368.0000000000000000;;
+        let value = -179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368.0000000000000000;
         tlv_box.put_f64_value(01, value);
         assert_eq!(value, tlv_box.get_f64_value(01).unwrap());
     }
@@ -332,5 +326,4 @@ mod tests {
         let tlv_box2 = tlv_box.get_object_value(02).unwrap();
         assert_eq!(3333.33, tlv_box2.get_f32_value(01).unwrap());
     }
-
 }
