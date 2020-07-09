@@ -85,9 +85,12 @@ impl TlvBox {
             let mut typ = BytesMut::with_capacity(4);
             typ.put_i32(key.clone());
             let mut length = BytesMut::with_capacity(4);
-            length.put_i32(bytes.clone().len() as i32)
+            length.put_i32(bytes.clone().len() as i32);
 
+            let vec = typ.to_vec();
 
+            let mut x = vec![0; 8];
+            x[..3].clone_from_slice(&vec);
 
         }
         Bytes::from(result)
