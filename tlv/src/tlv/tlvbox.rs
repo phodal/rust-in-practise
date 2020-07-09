@@ -324,13 +324,13 @@ mod tests {
     #[test]
     fn test_convert_object_floaw() {
         let mut tlv_box1 = TlvBox::new();
-        tlv_box1.put_f32_value(01, 33.33);
+        tlv_box1.put_f32_value(01, 3333.33);
 
         let mut tlv_box = TlvBox::new();
         tlv_box.put_object_value(02, tlv_box1);
 
         let tlv_box2 = tlv_box.get_object_value(02).unwrap();
-        assert_eq!(33.33, tlv_box2.get_f32_value(01).unwrap());
+        assert_eq!(3333.33, tlv_box2.get_f32_value(01).unwrap());
     }
 
 }
