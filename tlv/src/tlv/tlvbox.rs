@@ -34,9 +34,13 @@ impl TlvBox {
         buf.put_i16(value);
         self.putBytesValue(typ, Bytes::from(buf))
     }
-    pub fn putIntValue(&self, typ: i32, value: i32) {
-        unimplemented!()
+
+    pub fn putIntValue(&mut self, typ: i32, value: i32) {
+        let mut buf = Vec::with_capacity(4);
+        buf.put_i32(value);
+        self.putBytesValue(typ, Bytes::from(buf))
     }
+
     pub fn putLongValue(&self, typ: i32, value: i64) {
         unimplemented!()
     }
@@ -85,6 +89,7 @@ impl TlvBox {
             Some(byts) => Some(byts.clone()),
         }
     }
+
     pub fn getShortValue(&self, typ: i32) -> Option<i16> {
         let mut bytes = self.m_objects.get(typ.clone().borrow());
         match bytes {
@@ -92,9 +97,15 @@ impl TlvBox {
             None => None,
         }
     }
-    pub fn getIntValue(&self, typ: i32) -> i32 {
-        unimplemented!()
+
+    pub fn getIntValue(&self, typ: i32) -> Option<i32> {
+        let mut bytes = self.m_objects.get(typ.clone().borrow());
+        match bytes {
+            Some(x) => Some(x.clone().get_i32()),
+            None => None,
+        }
     }
+
     pub fn getLongValue(&self, typ: i32) -> i64 {
         unimplemented!()
     }
@@ -173,6 +184,14 @@ mod tests {
         let value = 1000.88;
         tlv_box.putDoubleValue(01, value);
         assert_eq!(value, tlv_box.getDoubleValue(01).unwrap());
+    }
+
+    #[test]
+    fn test_covert_int() {
+        let mut tlv_box = TlvBox::new();
+        let value = 2332;
+        tlv_box.putIntValue(01, value);
+        assert_eq!(value, tlv_box.getIntValue(01).unwrap());
     }
 
     #[test]
