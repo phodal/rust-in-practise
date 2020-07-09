@@ -80,8 +80,15 @@ impl TlvBox {
         let offset = 0;
         let result = BytesMut::with_capacity(self.m_total_bytes);
         let keys = self.m_objects.keys();
-        for key in keys {
-            let bytes = self.m_objects.get(key).unwrap();
+        for key in keys.clone() {
+            let bytes = self.m_objects.get(&key.clone()).unwrap();
+            let mut typ = BytesMut::with_capacity(4);
+            typ.put_i32(key.clone());
+            let mut length = BytesMut::with_capacity(4);
+            length.put_i32(bytes.clone().len() as i32)
+
+
+
         }
         Bytes::from(result)
     }
