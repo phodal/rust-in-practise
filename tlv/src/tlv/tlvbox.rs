@@ -1,11 +1,10 @@
 use std::borrow::Borrow;
 use std::collections::HashMap;
 use std::fmt::Write;
-use std::iter::FromIterator;
-use std::str;
+    use std::str;
 use std::sync::Arc;
 
-use bytes::{Bytes, BytesMut, BufMut, Buf};
+use bytes::{Buf, BufMut, Bytes, BytesMut};
 
 pub struct TlvBox {
     m_objects: HashMap<i32, Bytes>,
@@ -59,20 +58,14 @@ impl TlvBox {
     pub fn getBytesValue(&self, typ: i32) -> Option<Bytes> {
         let bytes = self.m_objects.get(typ.clone().borrow());
         match bytes {
-            None => {
-                None
-            },
-            Some(byts) => {
-                Some(byts.clone())
-            }
+            None => None,
+            Some(byts) => Some(byts.clone()),
         }
     }
     pub fn getShortValue(&self, typ: i32) -> Option<i16> {
         let mut bytes = self.m_objects.get(typ.clone().borrow());
         match bytes {
-            Some(x) => {
-                Some(x.clone().get_i16())
-            },
+            Some(x) => Some(x.clone().get_i16()),
             None => None,
         }
     }
@@ -92,9 +85,7 @@ impl TlvBox {
         let value = self.getBytesValue(typ);
         let buf = value.clone().unwrap().to_vec();
         let s = match str::from_utf8(&buf) {
-            Ok(v) => {
-                v
-            },
+            Ok(v) => v,
             Err(e) => panic!("Invalid UTF-8 sequence: {}", e),
         };
         String::from(s)
@@ -103,7 +94,6 @@ impl TlvBox {
         unimplemented!()
     }
 }
-
 
 #[cfg(test)]
 mod tests {
