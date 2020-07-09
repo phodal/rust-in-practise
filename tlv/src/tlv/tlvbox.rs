@@ -323,4 +323,12 @@ mod tests {
         let tlv_box2 = tlv_box.get_object_value(02).unwrap();
         assert_eq!(3333.33, tlv_box2.get_f32_value(01).unwrap());
     }
+
+    #[test]
+    fn test_encode_tlv() {
+        let attrs_raw = vec![0, 0, 0, 6, 0, 0, 0, 5,  72, 101, 108, 108, 111];
+        let mut tlv_box = TlvBox::new();
+        tlv_box.put_string_value(6, String::from("Hello"));
+        assert_eq!(tlv_box.serialize().to_vec(), attrs_raw);
+    }
 }
