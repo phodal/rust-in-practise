@@ -45,11 +45,13 @@ impl MBox {
     pub fn from_uint(u: usize) -> MBox { MBox(u as *mut Header) }
     #[inline(always)]
     pub fn is_null(&self) -> bool {
-        **self as usize == 0
+        // **self as usize == 0
+        true
     }
     #[inline]
     pub fn data(&self) -> Data {
-        Data::from_uint((**self as usize) + header_size())
+        // Data::from_uint((**self as usize) + header_size())
+        Data::from_uint(0)
     }
 }
 
@@ -58,7 +60,7 @@ impl Data {
     pub fn from_uint(u: usize) -> Data {
         Data(u as *mut u8)
     }
-    pub fn mbox(&self) -> MBox {
-        MBox::from_uint((*(*self) as usize) - header_size())
-    }
+    // pub fn mbox(&self) -> MBox {
+        // MBox::from_uint((*(*self) as usize) - header_size())
+    // }
 }
