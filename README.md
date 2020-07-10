@@ -1,41 +1,18 @@
-# Learn Rust Web
+# Rust Logs
+
+> learn Rust with write some toys for future reused.
 
 
-## Local
 
-Install Minikube
+ - web-docker. build Rust hello world services with Docker.
+ - tlv. Rust impl for Type-Length-Value.
+ - rudp. 
+ - poc. use library for testing.
 
-https://github.com/kubernetes/minikube
+License
+---
 
-1. check vm
+[![Phodal's Idea](http://brand.phodal.com/shields/idea-small.svg)](http://ideas.phodal.com/)
 
-```bash
-sysctl -a | grep -E --color 'machdep.cpu.features|VMX'
-```
-
-2. install minikube
-
-```bash
-brew install minikube
-```
-
-3. start minikube
-
-```bash
-minikube start
-```
-
-4. install kubectl
-
-```bash
-brew install kubernetes-cli
-```
-
-5. check kubectl
-
-```bash
-kubectl cluster-info
-```
-
-
+@ 2020 A [Phodal Huang](https://www.phodal.com)'s [Idea](http://github.com/phodal/ideas).  This code is distributed under the MIT license. See `LICENSE` in this directory.
 
