@@ -79,11 +79,14 @@ pub mod language {
 
 #[cfg(test)]
 mod tests {
-    use crate::language::lexer;
+    use crate::language::{lexer, parser};
 
     #[test]
     fn test_stack() {
-        let vec = lexer("1 5 +");
-        assert_eq!(3, vec.len())
+        let tok = lexer("1 5 +");
+        assert_eq!(3, tok.len());
+
+        let parsed_data = parser(tok);
+        assert_eq!(vec![1, 5, 1073741825, 1073741824], parsed_data.to_vec());
     }
 }
