@@ -75,6 +75,8 @@ fn main() {
     container.register_rule(Box::new(EmptyRule {}));
     container.register_rule(Box::new(BeginRule::new(1)));
 
+    // todo: remove borrow here
+    // todo: rebuild get rule logic ? to index ?????
     let rule = borrow_a(&mut container.index, 1);
     rule.collect_patterns_recursive(&mut container.rules);
 }
