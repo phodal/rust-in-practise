@@ -40,6 +40,14 @@ impl RuleContainer {
     pub fn get_rule_new(&mut self, pattern_id: i32) -> &mut Box<dyn BasicRule> {
         return self.rules[pattern_id as usize].borrow_mut();
     }
+
+    pub fn new() -> Self {
+        let mut rules: Vec<Box<dyn BasicRule>> = vec![];
+        rules.resize_with(RULE_SIZE, || { Box::new(EmptyRule {}) });
+        RuleContainer {
+            rules
+        }
+    }
 }
 
 fn main() {
