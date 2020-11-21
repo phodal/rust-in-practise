@@ -2,7 +2,10 @@ use std::borrow::BorrowMut;
 
 const RULE_SIZE: usize = 100;
 
-trait BasicRule { fn id(&self) -> i32; }
+trait BasicRule {
+    fn id(&self) -> i32;
+    fn collect_patterns_recursive(&mut self, container: &mut RuleContainer,);
+}
 
 pub struct Rule { id: i32, }
 
@@ -16,18 +19,27 @@ impl BeginRule {
 
 impl BasicRule for BeginRule {
     fn id(&self) -> i32 { self.rule.id }
+
+    fn collect_patterns_recursive(&mut self, container: &mut RuleContainer) {
+
+    }
 }
 
 pub struct EmptyRule { }
 
-impl BasicRule for EmptyRule { fn id(&self) -> i32 { 0 } }
+impl BasicRule for EmptyRule {
+    fn id(&self) -> i32 { 0 }
+    fn collect_patterns_recursive(&mut self, container: &mut RuleContainer) {
+
+    }
+}
 
 pub struct RuleContainer {
     pub rules: Vec<Box<dyn BasicRule>>
 }
 
 impl RuleContainer {
-    pub fn register_rule_new(&mut self, result: Box<dyn BasicRule>) -> i32 {
+    pub fn register_rule(&mut self, result: Box<dyn BasicRule>) -> i32 {
         let id = result.id();
         if id >= RULE_SIZE as i32 {
             self.rules
@@ -37,7 +49,7 @@ impl RuleContainer {
         id
     }
 
-    pub fn get_rule_new(&mut self, pattern_id: i32) -> &mut Box<dyn BasicRule> {
+    pub fn get_rule(&mut self, pattern_id: i32) -> &mut Box<dyn BasicRule> {
         return self.rules[pattern_id as usize].borrow_mut();
     }
 
@@ -51,5 +63,10 @@ impl RuleContainer {
 }
 
 fn main() {
-    println!("Hello, world!");
+    let mut container = RuleContainer::new();
+    let id = 1;
+    container.register_rule(Box::new(BeginRule::new(id)));
+
+    let rule = container.get_rule(1);
+    rule.collect_patterns_recursive(&mut container);
 }
