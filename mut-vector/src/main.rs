@@ -1,12 +1,9 @@
-use std::borrow::BorrowMut;
 use dyn_clone::{clone_trait_object, DynClone};
 use std::collections::HashMap;
 
-const RULE_SIZE: usize = 100;
-
 trait BasicRule: DynClone {
     fn id(&self) -> i32;
-    fn collect_patterns_recursive(&mut self, container: &mut RuleContainer);
+    fn collect_patterns_recursive(&mut self, container: &mut Vec<Box<dyn BasicRule>>);
 }
 
 clone_trait_object!(BasicRule);
@@ -26,9 +23,9 @@ impl BeginRule {
 impl BasicRule for BeginRule {
     fn id(&self) -> i32 { self.rule.id }
 
-    fn collect_patterns_recursive(&mut self, container: &mut RuleContainer) {
+    fn collect_patterns_recursive(&mut self, container: &mut Vec<Box<dyn BasicRule>>) {
         let other_rule_id = 0;
-        let mut rule = container.get_rule(other_rule_id).clone();
+        let mut rule = container[other_rule_id].clone();
         rule.collect_patterns_recursive(container);
     }
 }
@@ -38,35 +35,37 @@ pub struct EmptyRule {}
 
 impl BasicRule for EmptyRule {
     fn id(&self) -> i32 { 0 }
-    fn collect_patterns_recursive(&mut self, container: &mut RuleContainer) {}
+    fn collect_patterns_recursive(&mut self, container: &mut Vec<Box<dyn BasicRule>>) {}
 }
 
 pub struct RuleContainer<'rules> {
-    pub rules: &'rules mut Vec<Box<dyn BasicRule>>,
+    pub index: HashMap<i32, Box<dyn BasicRule>>,
+    rules: &'rules mut Vec<Box<dyn BasicRule>>,
 }
 
 impl<'rules> RuleContainer<'rules> {
     fn default(rules: &'rules mut Vec<Box<dyn BasicRule>>) -> Self {
         RuleContainer {
-            rules
+            index: Default::default(),
+            rules,
         }
     }
 
-    pub fn get_rule(&mut self, pattern_id: usize) -> &mut Box<dyn BasicRule> {
-        return &mut self
-            .rules[pattern_id];
+    fn get_rule(&mut self, pattern_id: usize) -> &mut Box<dyn BasicRule> {
+        return &mut self.rules[pattern_id];
     }
 
-    pub fn register_rule(&mut self, result: Box<dyn BasicRule>) -> i32 {
+    fn register_rule(&mut self, result: Box<dyn BasicRule>) -> i32 {
         let id = result.id();
         self.rules.resize_with((id + 1) as usize, || { Box::from(EmptyRule {}) });
+        self.index.insert(id, result.clone());
         self.rules[id as usize] = result;
         id
     }
 }
 
-fn borrow_a<'a>(container: &'a mut RuleContainer, pattern_id: i32) -> &'a mut Box<dyn BasicRule> {
-    &mut container.rules[pattern_id as usize]
+fn borrow_a(container: &mut HashMap<i32, Box<dyn BasicRule>>, pattern_id: i32) -> &mut Box<dyn BasicRule> {
+    return container.get_mut(&pattern_id).unwrap();
 }
 
 fn main() {
@@ -76,7 +75,6 @@ fn main() {
     container.register_rule(Box::new(EmptyRule {}));
     container.register_rule(Box::new(BeginRule::new(1)));
 
-    // let rule = borrow_a(&mut container, 1);
-    let mut rule = container.get_rule(1).clone();
-    rule.collect_patterns_recursive(&mut container);
+    let rule = borrow_a(&mut container.index, 1);
+    rule.collect_patterns_recursive(&mut container.rules);
 }
