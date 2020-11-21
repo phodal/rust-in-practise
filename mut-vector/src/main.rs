@@ -35,11 +35,11 @@ pub struct EmptyRule {}
 
 impl BasicRule for EmptyRule {
     fn id(&self) -> i32 { 0 }
-    fn collect_patterns_recursive(&mut self, container: &mut Vec<Box<dyn BasicRule>>) {}
+    fn collect_patterns_recursive(&mut self, _container: &mut Vec<Box<dyn BasicRule>>) {}
 }
 
 pub struct RuleContainer<'rules> {
-    pub index: HashMap<i32, Box<dyn BasicRule>>,
+    index: HashMap<i32, Box<dyn BasicRule>>,
     rules: &'rules mut Vec<Box<dyn BasicRule>>,
 }
 
@@ -51,6 +51,7 @@ impl<'rules> RuleContainer<'rules> {
         }
     }
 
+    #[allow(dead_code)]
     fn get_rule(&mut self, pattern_id: usize) -> &mut Box<dyn BasicRule> {
         return &mut self.rules[pattern_id];
     }
