@@ -65,6 +65,10 @@ impl<'rules> RuleContainer<'rules> {
     }
 }
 
+fn borrow_a<'a>(container: &'a mut RuleContainer, pattern_id: i32) -> &'a mut Box<dyn BasicRule> {
+    &mut container.rules[pattern_id as usize]
+}
+
 fn main() {
     let mut rules = vec![];
     let mut container = RuleContainer::default(&mut rules);
@@ -72,6 +76,7 @@ fn main() {
     container.register_rule(Box::new(EmptyRule {}));
     container.register_rule(Box::new(BeginRule::new(1)));
 
+    // let rule = borrow_a(&mut container, 1);
     let mut rule = container.get_rule(1).clone();
     rule.collect_patterns_recursive(&mut container);
 }
