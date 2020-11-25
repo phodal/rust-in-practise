@@ -63,6 +63,11 @@ impl<'rules> RuleContainer<'rules> {
         self.rules[id as usize] = result;
         id
     }
+
+    pub fn collect_by_id(&mut self, pattern_id: i32) {
+        let rule = self.index.get_mut(&1).unwrap();
+        rule.collect_patterns_recursive(&mut self.rules);
+    }
 }
 
 fn main() {
@@ -73,6 +78,5 @@ fn main() {
     container.register_rule(Box::new(BeginRule::new(1)));
 
     // todo: rebuild get rule logic ? to index ?????
-    let rule = container.index.get_mut(&1).unwrap();
-    rule.collect_patterns_recursive(&mut container.rules);
+    container.collect_by_id(1);
 }
