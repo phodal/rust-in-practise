@@ -65,10 +65,6 @@ impl<'rules> RuleContainer<'rules> {
     }
 }
 
-fn borrow_a(container: &mut HashMap<i32, Box<dyn BasicRule>>, pattern_id: i32) -> &mut Box<dyn BasicRule> {
-    return container.get_mut(&pattern_id).unwrap();
-}
-
 fn main() {
     let mut rules = vec![];
     let mut container = RuleContainer::default(&mut rules);
@@ -76,8 +72,7 @@ fn main() {
     container.register_rule(Box::new(EmptyRule {}));
     container.register_rule(Box::new(BeginRule::new(1)));
 
-    // todo: remove borrow here
     // todo: rebuild get rule logic ? to index ?????
-    let rule = borrow_a(&mut container.index, 1);
+    let rule = container.index.get_mut(&1).unwrap();
     rule.collect_patterns_recursive(&mut container.rules);
 }
