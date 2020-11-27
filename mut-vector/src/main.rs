@@ -1,9 +1,12 @@
 use dyn_clone::{clone_trait_object, DynClone};
 use std::collections::HashMap;
+use std::cell::RefCell;
+use std::rc::Rc;
 
 trait BasicRule: DynClone {
     fn id(&self) -> i32;
     fn collect_patterns_recursive(&mut self, container: &mut Vec<Box<dyn BasicRule>>);
+    fn update_by(&mut self) where Self: Sized;
 }
 
 clone_trait_object!(BasicRule);
@@ -28,6 +31,8 @@ impl BasicRule for BeginRule {
         let mut rule = container[other_rule_id].clone();
         rule.collect_patterns_recursive(container);
     }
+
+    fn update_by(&mut self) where Self: Sized {}
 }
 
 #[derive(Clone)]
@@ -36,6 +41,7 @@ pub struct EmptyRule {}
 impl BasicRule for EmptyRule {
     fn id(&self) -> i32 { 0 }
     fn collect_patterns_recursive(&mut self, _container: &mut Vec<Box<dyn BasicRule>>) {}
+    fn update_by(&mut self) where Self: Sized {}
 }
 
 pub struct RuleContainer<'rules> {
@@ -77,6 +83,9 @@ fn main() {
     container.register_rule(Box::new(EmptyRule {}));
     container.register_rule(Box::new(BeginRule::new(1)));
 
-    // todo: rebuild get rule logic ? to index ?????
-    container.collect_by_id(1);
+    let shared_map: Rc<RefCell<_>> = Rc::new(RefCell::new(container.index));
+
+    let mut rules = shared_map.borrow_mut();
+    let rule = rules.get_mut(&1).unwrap();
+    rule.collect_patterns_recursive(&mut container.rules);
 }
