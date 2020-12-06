@@ -1,6 +1,6 @@
 use dyn_clone::{clone_trait_object, DynClone};
 
-trait BasicRule: DynClone {
+pub trait BasicRule: DynClone {
     fn id(&self) -> i32;
     fn collect_patterns_recursive(&mut self, container: &mut Vec<Box<dyn BasicRule>>);
     fn update_by(&mut self) where Self: Sized;
@@ -8,10 +8,10 @@ trait BasicRule: DynClone {
 
 clone_trait_object!(BasicRule);
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct Rule { id: i32 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct BeginRule { rule: Rule }
 
 impl BeginRule {
@@ -32,7 +32,7 @@ impl BasicRule for BeginRule {
     fn update_by(&mut self) where Self: Sized {}
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct EmptyRule {}
 
 impl BasicRule for EmptyRule {

@@ -1,21 +1,27 @@
 pub mod rule;
 
 use std::{cell::RefCell, collections::HashMap};
+use crate::rule::{EmptyRule, BeginRule, BasicRule};
+use std::rc::Rc;
 
 fn main() {
-    let mut map = HashMap::new();
+    let mut map: HashMap<i32, Rc<RefCell<dyn BasicRule>>> = HashMap::new();
 
-    map.insert("1", RefCell::new(1));
-    map.insert("2", RefCell::new(2));
+    let first_rule = EmptyRule {};
+    let second_rule = BeginRule::new(1);
 
+    map.insert(1, Rc::new(RefCell::new(first_rule)));
+    map.insert(2, Rc::new(RefCell::new(second_rule)));
     {
-        let a = map.get("1").unwrap();
-        println!("a: {}", a.borrow());
+        let a = map.get(&1).unwrap();
+        let x = &*a.borrow();
+        println!("a: {}", x.id());
 
-        let b = map.get("2").unwrap();
-        println!("b: {}", b.borrow());
-        *b.borrow_mut() = 5;
+
+        let b = map.get(&2).unwrap();
+        let y = &*b.borrow_mut();
+        println!("b: {}", y.id());
     }
 
-    println!("Results: {:?}", map);
+    // println!("Results: {:?}", map);
 }
