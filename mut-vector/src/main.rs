@@ -5,6 +5,7 @@ use crate::rule::{EmptyRule, BeginRule, BasicRule};
 use std::rc::Rc;
 
 fn main() {
+    let mut map2: Rc<RefCell<HashMap<i32, Box<dyn BasicRule>>>> = Rc::new(RefCell::new(HashMap::new()));
     let mut map: HashMap<i32, Rc<RefCell<dyn BasicRule>>> = HashMap::new();
 
     let first_rule = EmptyRule {};
