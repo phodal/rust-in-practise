@@ -5,6 +5,7 @@ use crate::rule::{EmptyRule, BeginRule, BasicRule};
 use std::rc::Rc;
 
 fn main() {
+    // https://github.com/servo/servo/blob/master/ports/winit/app.rs
     let first_rule = EmptyRule {};
     let second_rule = BeginRule::new(1);
 
