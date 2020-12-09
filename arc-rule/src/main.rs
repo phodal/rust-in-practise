@@ -48,4 +48,7 @@ fn main() {
     let mut map = RuleContainer::get_rules();
     let rule = map.get_mut(&1).unwrap();
     println!("{:?}", rule.id());
+
+    let mut x = Rc::new(3);
+    *Rc::get_mut(&mut x).unwrap() = 4;
 }
