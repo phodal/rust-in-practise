@@ -49,6 +49,15 @@ fn main() {
     let rule = map.get_mut(&1).unwrap();
     println!("{:?}", rule.id());
 
+    testit();
+}
+
+fn testit() {
     let mut x = Rc::new(3);
     *Rc::get_mut(&mut x).unwrap() = 4;
+    assert_eq!(*x, 4);
+
+    let _y = Rc::clone(&x);
+    println!("{:?}", Rc::get_mut(&mut x));
+    assert!(Rc::get_mut(&mut x).is_none());
 }
