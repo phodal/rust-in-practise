@@ -1,5 +1,5 @@
 // auto-generated: "lalrpop 0.19.1"
-// sha256: 9dd72e40597f4af4547cdcb6f6bcf1c6ebc25221c32853174e9d8e22da29037
+// sha256: f5eb9e664cf9674f4edafdddad4421aa49c556aef6c6496e55567989a7a6b19
 use crate::pt::*;
 use crate::token::*;
 #[allow(unused_extern_crates)]
@@ -17,39 +17,74 @@ mod __parse__Func {
     extern crate lalrpop_util as __lalrpop_util;
     #[allow(unused_imports)]
     use self::__lalrpop_util::state_machine as __state_machine;
-    use super::__ToTriple;
+    use self::__lalrpop_util::lexer::Token;
     #[allow(dead_code)]
     pub enum __Symbol<'input>
      {
         Variant0(&'input str),
-        Variant1(usize),
+        Variant1(Expression),
         Variant2(Func),
-        Variant3(Identifier),
     }
     const __ACTION: &[i8] = &[
         // State 0
-        0,
+        2, 0, 7,
         // State 1
-        0,
+        2, 0, 7,
+        // State 2
+        0, 0, 0,
+        // State 3
+        0, 0, 0,
+        // State 4
+        0, -1, 0,
+        // State 5
+        0, -2, 0,
+        // State 6
+        0, -4, 0,
+        // State 7
+        0, 9, 0,
+        // State 8
+        0, -5, 0,
     ];
     fn __action(state: i8, integer: usize) -> i8 {
-        __ACTION[(state as usize) * 1 + integer]
+        __ACTION[(state as usize) * 3 + integer]
     }
     const __EOF_ACTION: &[i8] = &[
         // State 0
         0,
         // State 1
+        0,
+        // State 2
+        -3,
+        // State 3
+        -6,
+        // State 4
+        -1,
+        // State 5
+        -2,
+        // State 6
         -4,
+        // State 7
+        0,
+        // State 8
+        -5,
     ];
     fn __goto(state: i8, nt: usize) -> i8 {
         match nt {
-            2 => 1,
+            0 => match state {
+                1 => 7,
+                _ => 2,
+            },
+            1 => 3,
+            2 => 4,
+            3 => 5,
             _ => 0,
         }
     }
     fn __expected_tokens(__state: i8) -> Vec<::std::string::String> {
         const __TERMINAL: &[&str] = &[
-            r###"LexIdentifier"###,
+            r###""(""###,
+            r###"")""###,
+            r###""a""###,
         ];
         __TERMINAL.iter().enumerate().filter_map(|(index, terminal)| {
             let next_state = __action(__state, index);
@@ -102,7 +137,7 @@ mod __parse__Func {
 
         #[inline]
         fn error_action(&self, state: i8) -> i8 {
-            __action(state, 1 - 1)
+            __action(state, 3 - 1)
         }
 
         #[inline]
@@ -165,7 +200,9 @@ mod __parse__Func {
     ) -> Option<usize>
     {
         match *__token {
-            Token::Identifier(_) if true => Some(0),
+            Token(0, _) if true => Some(0),
+            Token(1, _) if true => Some(1),
+            Token(2, _) if true => Some(2),
             _ => None,
         }
     }
@@ -178,20 +215,23 @@ mod __parse__Func {
     ) -> __Symbol<'input>
     {
         match __token_index {
-            0 => match __token {
-                Token::Identifier(__tok0) if true => __Symbol::Variant0(__tok0),
+            0 | 1 | 2 => match __token {
+                Token(0, __tok0) | Token(1, __tok0) | Token(2, __tok0) if true => __Symbol::Variant0(__tok0),
                 _ => unreachable!(),
             },
             _ => unreachable!(),
         }
     }
     pub struct FuncParser {
+        builder: __lalrpop_util::lexer::MatcherBuilder,
         _priv: (),
     }
 
     impl FuncParser {
         pub fn new() -> FuncParser {
+            let __builder = super::__intern_token::new_builder();
             FuncParser {
+                builder: __builder,
                 _priv: (),
             }
         }
@@ -199,16 +239,12 @@ mod __parse__Func {
         #[allow(dead_code)]
         pub fn parse<
             'input,
-            __TOKEN: __ToTriple<'input, >,
-            __TOKENS: IntoIterator<Item=__TOKEN>,
         >(
             &self,
             input: &'input str,
-            __tokens0: __TOKENS,
         ) -> Result<Func, __lalrpop_util::ParseError<usize, Token<'input>, &'static str>>
         {
-            let __tokens = __tokens0.into_iter();
-            let mut __tokens = __tokens.map(|t| __ToTriple::to_triple(t));
+            let mut __tokens = self.builder.matcher(input);
             __state_machine::Parser::drive(
                 __StateMachine {
                     input,
@@ -240,6 +276,12 @@ mod __parse__Func {
                 __reduce2(input, __lookahead_start, __symbols, ::std::marker::PhantomData::<(&())>)
             }
             3 => {
+                __reduce3(input, __lookahead_start, __symbols, ::std::marker::PhantomData::<(&())>)
+            }
+            4 => {
+                __reduce4(input, __lookahead_start, __symbols, ::std::marker::PhantomData::<(&())>)
+            }
+            5 => {
                 // __Func = Func => ActionFn(0);
                 let __sym0 = __pop_Variant2(__symbols);
                 let __start = __sym0.0.clone();
@@ -260,6 +302,17 @@ mod __parse__Func {
     fn __symbol_type_mismatch() -> ! {
         panic!("symbol type mismatch")
     }
+    fn __pop_Variant1<
+      'input,
+    >(
+        __symbols: &mut ::std::vec::Vec<(usize,__Symbol<'input>,usize)>
+    ) -> (usize, Expression, usize)
+     {
+        match __symbols.pop() {
+            Some((__l, __Symbol::Variant1(__v), __r)) => (__l, __v, __r),
+            _ => __symbol_type_mismatch()
+        }
+    }
     fn __pop_Variant2<
       'input,
     >(
@@ -268,28 +321,6 @@ mod __parse__Func {
      {
         match __symbols.pop() {
             Some((__l, __Symbol::Variant2(__v), __r)) => (__l, __v, __r),
-            _ => __symbol_type_mismatch()
-        }
-    }
-    fn __pop_Variant3<
-      'input,
-    >(
-        __symbols: &mut ::std::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, Identifier, usize)
-     {
-        match __symbols.pop() {
-            Some((__l, __Symbol::Variant3(__v), __r)) => (__l, __v, __r),
-            _ => __symbol_type_mismatch()
-        }
-    }
-    fn __pop_Variant1<
-      'input,
-    >(
-        __symbols: &mut ::std::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, usize, usize)
-     {
-        match __symbols.pop() {
-            Some((__l, __Symbol::Variant1(__v), __r)) => (__l, __v, __r),
             _ => __symbol_type_mismatch()
         }
     }
@@ -313,12 +344,13 @@ mod __parse__Func {
         _: ::std::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // @L =  => ActionFn(3);
-        let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2.clone())).unwrap_or_default();
-        let __end = __start.clone();
-        let __nt = super::__action3::<>(input, &__start, &__end);
+        // Expression = NormalExpr => ActionFn(2);
+        let __sym0 = __pop_Variant1(__symbols);
+        let __start = __sym0.0.clone();
+        let __end = __sym0.2.clone();
+        let __nt = super::__action2::<>(input, __sym0);
         __symbols.push((__start, __Symbol::Variant1(__nt), __end));
-        (0, 0)
+        (1, 0)
     }
     pub(crate) fn __reduce1<
         'input,
@@ -329,12 +361,13 @@ mod __parse__Func {
         _: ::std::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // @R =  => ActionFn(2);
-        let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2.clone())).unwrap_or_default();
-        let __end = __start.clone();
-        let __nt = super::__action2::<>(input, &__start, &__end);
+        // Expression = ParenthesizedExpression => ActionFn(3);
+        let __sym0 = __pop_Variant1(__symbols);
+        let __start = __sym0.0.clone();
+        let __end = __sym0.2.clone();
+        let __nt = super::__action3::<>(input, __sym0);
         __symbols.push((__start, __Symbol::Variant1(__nt), __end));
-        (0, 1)
+        (1, 0)
     }
     pub(crate) fn __reduce2<
         'input,
@@ -345,16 +378,73 @@ mod __parse__Func {
         _: ::std::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Identifier = LexIdentifier => ActionFn(5);
+        // Func = Expression => ActionFn(1);
+        let __sym0 = __pop_Variant1(__symbols);
+        let __start = __sym0.0.clone();
+        let __end = __sym0.2.clone();
+        let __nt = super::__action1::<>(input, __sym0);
+        __symbols.push((__start, __Symbol::Variant2(__nt), __end));
+        (1, 1)
+    }
+    pub(crate) fn __reduce3<
+        'input,
+    >(
+        input: &'input str,
+        __lookahead_start: Option<&usize>,
+        __symbols: &mut ::std::vec::Vec<(usize,__Symbol<'input>,usize)>,
+        _: ::std::marker::PhantomData<(&'input ())>,
+    ) -> (usize, usize)
+    {
+        // NormalExpr = "a" => ActionFn(4);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0.clone();
         let __end = __sym0.2.clone();
-        let __nt = super::__action5::<>(input, __sym0);
-        __symbols.push((__start, __Symbol::Variant3(__nt), __end));
-        (1, 3)
+        let __nt = super::__action4::<>(input, __sym0);
+        __symbols.push((__start, __Symbol::Variant1(__nt), __end));
+        (1, 2)
+    }
+    pub(crate) fn __reduce4<
+        'input,
+    >(
+        input: &'input str,
+        __lookahead_start: Option<&usize>,
+        __symbols: &mut ::std::vec::Vec<(usize,__Symbol<'input>,usize)>,
+        _: ::std::marker::PhantomData<(&'input ())>,
+    ) -> (usize, usize)
+    {
+        // ParenthesizedExpression = "(", Expression, ")" => ActionFn(5);
+        assert!(__symbols.len() >= 3);
+        let __sym2 = __pop_Variant0(__symbols);
+        let __sym1 = __pop_Variant1(__symbols);
+        let __sym0 = __pop_Variant0(__symbols);
+        let __start = __sym0.0.clone();
+        let __end = __sym2.2.clone();
+        let __nt = super::__action5::<>(input, __sym0, __sym1, __sym2);
+        __symbols.push((__start, __Symbol::Variant1(__nt), __end));
+        (3, 3)
     }
 }
 pub use self::__parse__Func::FuncParser;
+#[cfg_attr(rustfmt, rustfmt_skip)]
+mod __intern_token {
+    #![allow(unused_imports)]
+    use crate::pt::*;
+    use crate::token::*;
+    #[allow(unused_extern_crates)]
+    extern crate lalrpop_util as __lalrpop_util;
+    #[allow(unused_imports)]
+    use self::__lalrpop_util::state_machine as __state_machine;
+    pub fn new_builder() -> __lalrpop_util::lexer::MatcherBuilder {
+        let __strs: &[(&str, bool)] = &[
+            ("^(\\()", false),
+            ("^(\\))", false),
+            ("^(a)", false),
+            (r"^(\s*)", true),
+        ];
+        __lalrpop_util::lexer::MatcherBuilder::new(__strs.iter().copied()).unwrap()
+    }
+}
+pub use self::__lalrpop_util::lexer::Token;
 
 #[allow(unused_variables)]
 fn __action0<
@@ -372,12 +462,12 @@ fn __action1<
     'input,
 >(
     input: &'input str,
-    (_, l, _): (usize, usize, usize),
-    (_, n, _): (usize, &'input str, usize),
-    (_, r, _): (usize, usize, usize),
-) -> Identifier
+    (_, e, _): (usize, Expression, usize),
+) -> Func
 {
-    Identifier{loc: Loc(l, r), name: n.to_string()}
+    {
+        Func { expr: e }
+    }
 }
 
 #[allow(unused_variables)]
@@ -385,11 +475,10 @@ fn __action2<
     'input,
 >(
     input: &'input str,
-    __lookbehind: &usize,
-    __lookahead: &usize,
-) -> usize
+    (_, __0, _): (usize, Expression, usize),
+) -> Expression
 {
-    __lookbehind.clone()
+    __0
 }
 
 #[allow(unused_variables)]
@@ -397,11 +486,10 @@ fn __action3<
     'input,
 >(
     input: &'input str,
-    __lookbehind: &usize,
-    __lookahead: &usize,
-) -> usize
+    (_, __0, _): (usize, Expression, usize),
+) -> Expression
 {
-    __lookahead.clone()
+    __0
 }
 
 #[allow(unused_variables)]
@@ -409,24 +497,12 @@ fn __action4<
     'input,
 >(
     input: &'input str,
-    __0: (usize, &'input str, usize),
-    __1: (usize, usize, usize),
-) -> Identifier
+    (_, __0, _): (usize, &'input str, usize),
+) -> Expression
 {
-    let __start0 = __0.0.clone();
-    let __end0 = __0.0.clone();
-    let __temp0 = __action3(
-        input,
-        &__start0,
-        &__end0,
-    );
-    let __temp0 = (__start0, __temp0, __end0);
-    __action1(
-        input,
-        __temp0,
-        __0,
-        __1,
-    )
+    {
+        Expression {}
+    }
 }
 
 #[allow(unused_variables)]
@@ -434,22 +510,12 @@ fn __action5<
     'input,
 >(
     input: &'input str,
-    __0: (usize, &'input str, usize),
-) -> Identifier
+    (_, _, _): (usize, &'input str, usize),
+    (_, e, _): (usize, Expression, usize),
+    (_, _, _): (usize, &'input str, usize),
+) -> Expression
 {
-    let __start0 = __0.2.clone();
-    let __end0 = __0.2.clone();
-    let __temp0 = __action2(
-        input,
-        &__start0,
-        &__end0,
-    );
-    let __temp0 = (__start0, __temp0, __end0);
-    __action4(
-        input,
-        __0,
-        __temp0,
-    )
+    e
 }
 
 pub trait __ToTriple<'input, > {

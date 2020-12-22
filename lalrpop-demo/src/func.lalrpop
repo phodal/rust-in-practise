@@ -1,20 +1,27 @@
 use crate::pt::*;
 use crate::token::*;
 
-grammar<'input>(input: &'input str);
+grammar;
 
 pub Func: Func = {
-
+    <e:Expression> => {
+        Func { expr: e }
+    },
 }
 
-Identifier: Identifier = {
-    <l:@L> <n:LexIdentifier> <r:@R> => Identifier{loc: Loc(l, r), name: n.to_string()}
+Expression: Expression = {
+//    <FunctionCall> => <>,
+    NormalExpr,
+    ParenthesizedExpression,
 }
 
-extern {
-    type Location = usize;
-
-    enum Token<'input> {
-        LexIdentifier => Token::Identifier(<&'input str>),
+NormalExpr: Expression = {
+    "a" => {
+        Expression {}
     }
 }
+
+ParenthesizedExpression: Expression = {
+    "(" <e:Expression> ")" => e,
+}
+

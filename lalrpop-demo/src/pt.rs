@@ -1,7 +1,10 @@
 pub struct Func {
-
+    pub expr: Expression
 }
 
+pub struct Expression {
+
+}
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone, Copy, Default)]
 pub struct Loc(pub usize, pub usize);
