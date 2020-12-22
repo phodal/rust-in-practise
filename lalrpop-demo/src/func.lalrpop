@@ -1,0 +1,20 @@
+use crate::pt::*;
+use crate::token::*;
+
+grammar<'input>(input: &'input str);
+
+pub Func: Func = {
+
+}
+
+Identifier: Identifier = {
+    <l:@L> <n:LexIdentifier> <r:@R> => Identifier{loc: Loc(l, r), name: n.to_string()}
+}
+
+extern {
+    type Location = usize;
+
+    enum Token<'input> {
+        LexIdentifier => Token::Identifier(<&'input str>),
+    }
+}
