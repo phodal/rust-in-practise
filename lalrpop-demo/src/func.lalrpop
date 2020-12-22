@@ -9,11 +9,15 @@ pub Func: Func = {
 }
 
 pub Suite: Vec<Statement> = {
-    <s:Statement+> => s.into_iter().flatten().collect(),
+    <s:Statement*> => {
+        Block {
+            stmts: s
+        }
+    }
 }
 
 pub Statement: Statement = {
-    <e:Expression> => {
+    <e:Expression> ";" => {
         Statement { expr: e }
     }
 }

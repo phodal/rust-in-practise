@@ -9,6 +9,11 @@ pub struct Statement {
 }
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone, Copy, Default)]
+pub struct Block {
+    pub stmts: Vec<Statement>
+}
+
+#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy, Default)]
 pub struct Expression {}
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone, Copy, Default)]
