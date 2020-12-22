@@ -3,9 +3,19 @@ use crate::pt::*;
 grammar;
 
 pub Func: Func = {
-    <e:Expression> => {
-        Func { expr: e }
+    <s:Suite> => {
+        Func { body: s }
     },
+}
+
+pub Suite: Vec<Statement> = {
+    <s:Statement+> => s.into_iter().flatten().collect(),
+}
+
+pub Statement: Statement = {
+    <e:Expression> => {
+        Statement { expr: e }
+    }
 }
 
 Expression: Expression = {
@@ -21,8 +31,8 @@ NotExpression: Expression = {
 
 PrimaryExpression: Expression = {
     <FunctionCall> => <>,
-    NormalExpr,
     ParenthesizedExpression,
+    NormalExpr,
 }
 
 FunctionCall: Expression = {
