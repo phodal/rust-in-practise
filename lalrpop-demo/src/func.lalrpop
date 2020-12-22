@@ -8,7 +8,7 @@ pub Func: Func = {
     },
 }
 
-pub Suite: Vec<Statement> = {
+pub Suite: Block = {
     <s:Statement*> => {
         Block {
             stmts: s
@@ -17,13 +17,13 @@ pub Suite: Vec<Statement> = {
 }
 
 pub Statement: Statement = {
-    <e:Expression> ";" => {
+    <e:Expression> ";"? => {
         Statement { expr: e }
     }
 }
 
 Expression: Expression = {
-    <e:Expression> => e,
+    NotExpression,
 }
 
 NotExpression: Expression = {
@@ -49,6 +49,9 @@ FunctionCall: Expression = {
 
 NormalExpr: Expression = {
     "func" => {
+        Expression {}
+    },
+    "a" => {
         Expression {}
     }
 }
