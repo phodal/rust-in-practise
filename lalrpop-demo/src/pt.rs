@@ -1,7 +1,9 @@
+#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy, Default)]
 pub struct Func {
     pub expr: Expression
 }
 
+#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy, Default)]
 pub struct Expression {
 
 }

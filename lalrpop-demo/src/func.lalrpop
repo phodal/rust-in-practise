@@ -10,9 +10,17 @@ pub Func: Func = {
 }
 
 Expression: Expression = {
-//    <FunctionCall> => <>,
+    <FunctionCall> => <>,
     NormalExpr,
     ParenthesizedExpression,
+}
+
+FunctionCall: Expression = {
+    <l:@L> <f:Expression> "(" ")" <r:@R> => {
+        Expression {
+
+        }
+    }
 }
 
 NormalExpr: Expression = {

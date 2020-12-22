@@ -6,5 +6,15 @@ pub mod func;
 pub mod token;
 
 fn main() {
-    let _parser = func::FuncParser::new();
+    let result = func::FuncParser::new()
+        .parse("((((a))))")
+        .unwrap();
+
+    println!("{:?}", result);
+
+    let result = func::FuncParser::new()
+        .parse("a()")
+        .unwrap();
+
+    println!("{:?}", result);
 }
