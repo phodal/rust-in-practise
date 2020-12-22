@@ -11,4 +11,10 @@ fn main() {
     let _result = func::FuncParser::new()
         .parse("a()")
         .unwrap();
+
+    let result = func::FuncParser::new()
+        .parse("!a()")
+        .unwrap();
+
+    println!("{:?}", result);
 }

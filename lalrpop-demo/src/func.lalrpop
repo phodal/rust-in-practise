@@ -9,13 +9,24 @@ pub Func: Func = {
 }
 
 Expression: Expression = {
+    <e:Expression> => e,
+}
+
+NotExpression: Expression = {
+    <l:@L> "!" <r:@R> <e:NotExpression> => {
+       Expression { }
+    },
+    PrimaryExpression
+}
+
+PrimaryExpression: Expression = {
     <FunctionCall> => <>,
     NormalExpr,
     ParenthesizedExpression,
 }
 
 FunctionCall: Expression = {
-    <l:@L> <f:Expression> "(" ")" <r:@R> => {
+    <l:@L> <f:PrimaryExpression> "(" ")" <r:@R> => {
         Expression {
 
         }
@@ -23,7 +34,7 @@ FunctionCall: Expression = {
 }
 
 NormalExpr: Expression = {
-    "a" => {
+    "func" => {
         Expression {}
     }
 }
