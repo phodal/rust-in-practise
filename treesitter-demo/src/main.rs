@@ -6,7 +6,7 @@ extern "C" { fn tree_sitter_javascript() -> Language; }
 
 fn main() {
     let mut parser = Parser::new();
-        
+
     let language = unsafe { tree_sitter_rust() };
     parser.set_language(language).unwrap();
 
