@@ -28,6 +28,8 @@ use std::path::Path;
 use std::str::FromStr;
 use unic_langid::{langid, LanguageIdentifier};
 
+pub mod locales_helper;
+
 /// We need a generic file read helper function to
 /// read the localization resource file.
 ///
@@ -50,10 +52,6 @@ fn get_available_locales() -> Result<Vec<LanguageIdentifier>, io::Error> {
     let mut locales = vec![];
 
     let mut dir = env::current_dir()?;
-    // if dir.to_string_lossy().ends_with("fluent-rs") {
-    //     dir.push("fluent-bundle");
-    // }
-    // dir.push("examples");
     dir.push("resources");
     let res_dir = fs::read_dir(dir)?;
     for entry in res_dir {
